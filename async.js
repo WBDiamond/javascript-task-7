@@ -18,15 +18,15 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         let doneJobs = 0;
 
         let wrappedJobs = jobs.map(job => () => new Promise(resolveJob => {
-            job().then(resolveJob);
+            job().then(resolveJob)
+                .catch(resolveJob);
             setTimeout(resolveJob, timeout, new Error('Promise timeout'));
         }));
 
         let startQueue = wrappedJobs.slice(0, parallelNum);
 
         startQueue.forEach((job, i) => {
-            job().then(handler.bind(null, i))
-                .catch(handler.bind(null, i));
+            job().then(handler.bind(null, i));
         });
 
         function handler(index, jobResult) {
