@@ -18,8 +18,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         let doneJobs = 0;
 
         let wrappedJobs = jobs.map(job => () => new Promise(resolveJob => {
-            job().then(resolveJob)
-                .catch(resolveJob);
+            job().then(resolveJob, resolveJob);
             setTimeout(resolveJob, timeout, new Error('Promise timeout'));
         }));
 
