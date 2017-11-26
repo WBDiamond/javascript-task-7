@@ -1,6 +1,6 @@
 'use strict';
 
-exports.isStar = false;
+exports.isStar = true;
 exports.runParallel = runParallel;
 
 /** Функция паралелльно запускает указанное число промисов
@@ -25,7 +25,8 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         let startQueue = wrappedJobs.slice(0, parallelNum);
 
         startQueue.forEach((job, i) => {
-            job().then(handler.bind(null, i));
+            job().then(handler.bind(null, i))
+                .catch(handler.bind(null, i));
         });
 
         function handler(index, jobResult) {
