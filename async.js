@@ -3,12 +3,6 @@
 exports.isStar = true;
 exports.runParallel = runParallel;
 
-/** Функция паралелльно запускает указанное число промисов
- * @param {Array} jobs – функции, которые возвращают промисы
- * @param {Number} parallelNum - число одновременно исполняющихся промисов
- * @param {Number} timeout - таймаут работы промиса
- * @returns {Promise}
- */
 function runParallel(jobs, parallelNum, timeout = 1000) {
     return new Promise((resolve) => {
         if (!jobs.length) {
@@ -22,11 +16,8 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
             setTimeout(resolveJob, timeout, new Error('Promise timeout'));
         }));
 
-        let startQueue = wrappedJobs.slice(0, parallelNum);
-
-        startQueue.forEach((job, i) => {
-            job().then(handler.bind(null, i));
-        });
+        wrappedJobs.slice(0, parallelNum)
+            .forEach((job, i) => job().then(handler.bind(null, i)));
 
         function handler(index, jobResult) {
             resultArray[index] = jobResult;
@@ -37,6 +28,5 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
                 resolve(resultArray);
             }
         }
-
     });
 }
