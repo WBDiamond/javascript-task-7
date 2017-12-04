@@ -8,12 +8,13 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         if (!jobs.length) {
             resolve([]);
         }
-        let resultArray = [];
+        const resultArray = [jobs.length];
         let doneJobs = 0;
 
         let wrappedJobs = jobs.map(job => () => new Promise(resolveJob => {
-            job().then(resolveJob, resolveJob);
-            setTimeout(resolveJob, timeout, new Error('Promise timeout'));
+            Promise.race([job(), new Promise(inRes =>
+                setTimeout(inRes, timeout, new Error('Promise timeout')))])
+                .then(resolveJob, resolveJob);
         }));
 
         wrappedJobs.slice(0, parallelNum)
