@@ -8,7 +8,7 @@ function runParallel(jobs, parallelNum, timeout = 1000) {
         if (!jobs.length) {
             resolve([]);
         }
-        const resultArray = [jobs.length];
+        const resultArray = new Array(jobs.length);
         let doneJobs = 0;
 
         let wrappedJobs = jobs.map(job => () => new Promise(resolveJob => {
